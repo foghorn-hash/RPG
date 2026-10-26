@@ -12,6 +12,7 @@ import { CraftingModal } from './components/CraftingModal';
 import { ClassSelectModal } from './components/ClassSelectModal';
 import { WorldMapModal } from './components/WorldMapModal';
 import { DialogueModal } from './components/DialogueModal';
+import { WordPressPluginModal } from './components/WordPressPluginModal';
 import { soundEngine } from './audio/soundEngine';
 
 const DEFAULT_STATS: CharacterStats = {
@@ -76,7 +77,7 @@ export default function App() {
 
   // Modal Dialogs
   const [activeModal, setActiveModal] = useState<
-    'quests' | 'character' | 'skills' | 'inventory' | 'forge' | 'map' | 'classSelect' | 'dialogue' | null
+    'quests' | 'character' | 'skills' | 'inventory' | 'forge' | 'map' | 'classSelect' | 'dialogue' | 'wpPlugin' | null
   >(null);
   const [activeNpc, setActiveNpc] = useState<NPCData | null>(null);
 
@@ -324,6 +325,8 @@ export default function App() {
         setActiveModal((m) => (m === 'skills' ? null : 'skills'));
       } else if (e.code === 'KeyH') {
         setActiveModal((m) => (m === 'classSelect' ? null : 'classSelect'));
+      } else if (e.code === 'KeyP') {
+        setActiveModal((m) => (m === 'wpPlugin' ? null : 'wpPlugin'));
       } else if (e.code === 'Escape') {
         setActiveModal(null);
       }
@@ -547,6 +550,7 @@ export default function App() {
         onOpenForge={() => setActiveModal('forge')}
         onOpenMap={() => setActiveModal('map')}
         onOpenClassSelect={() => setActiveModal('classSelect')}
+        onOpenWordPressPlugin={() => setActiveModal('wpPlugin')}
         onTriggerAction={handleTriggerAction}
       />
 
@@ -627,6 +631,10 @@ export default function App() {
           onBuySupplies={handleBuySupplies}
           onClose={() => setActiveModal(null)}
         />
+      )}
+
+      {activeModal === 'wpPlugin' && (
+        <WordPressPluginModal onClose={() => setActiveModal(null)} />
       )}
     </div>
   );

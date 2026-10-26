@@ -34,6 +34,7 @@ interface HUDProps {
   onOpenForge: () => void;
   onOpenMap: () => void;
   onOpenClassSelect: () => void;
+  onOpenWordPressPlugin: () => void;
   onTriggerAction: (action: string) => void;
 }
 
@@ -51,6 +52,7 @@ export const HUD: React.FC<HUDProps> = ({
   onOpenForge,
   onOpenMap,
   onOpenClassSelect,
+  onOpenWordPressPlugin,
   onTriggerAction,
 }) => {
   const [isDockCollapsed, setIsDockCollapsed] = React.useState(false);
@@ -177,6 +179,14 @@ export const HUD: React.FC<HUDProps> = ({
           >
             <BookOpen className="w-3.5 h-3.5 text-amber-400" />
             <span>Quests [J]</span>
+          </button>
+          <button
+            onClick={onOpenWordPressPlugin}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs font-cinzel transition shadow border border-blue-400/40"
+            title="Lataa WordPress-plugin ZIP-asennuspaketti"
+          >
+            <span>📦</span>
+            <span>WordPress-plugin (.zip)</span>
           </button>
         </div>
       </div>
@@ -354,6 +364,14 @@ export const HUD: React.FC<HUDProps> = ({
                 >
                   <Hammer className="w-3.5 h-3.5 text-orange-400" />
                   <span>Blacksmith Forge</span>
+                </button>
+
+                <button
+                  onClick={onOpenWordPressPlugin}
+                  className="px-3 py-1.5 rounded-lg bg-blue-900/60 hover:bg-blue-800 text-blue-200 border border-blue-500/40 font-bold transition flex items-center gap-1.5"
+                >
+                  <span>📦</span>
+                  <span>WP-Plugin (.ZIP)</span>
                 </button>
               </div>
 
