@@ -22,6 +22,10 @@ import {
   Laptop,
   Check,
   PackageCheck,
+  Github,
+  Link2,
+  Terminal,
+  AlertTriangle,
 } from 'lucide-react';
 import { soundEngine } from '../audio/soundEngine';
 
@@ -31,14 +35,20 @@ interface WordPressPluginModalProps {
 
 export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onClose }) => {
   const [config, setConfig] = useState<WordPressPluginConfig>(DEFAULT_WP_CONFIG);
-  const [activeTab, setActiveTab] = useState<'download' | 'instructions' | 'files' | 'preview'>('download');
+  const [activeTab, setActiveTab] = useState<'download' | 'github' | 'instructions' | 'files' | 'preview'>('download');
   const [selectedFile, setSelectedFile] = useState<string>('plugin.php');
   const [copiedShortcode, setCopiedShortcode] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+  const [copiedGit, setCopiedGit] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  // Generate and download ZIP
+  const directZipUrl = typeof window !== 'undefined'
+    ? `${window.location.origin}/realm-of-eldoria-rpg.zip`
+    : '/realm-of-eldoria-rpg.zip';
+
+  // Generate and download ZIP dynamically
   const handleDownloadZip = async () => {
     try {
       setIsGenerating(true);
@@ -54,14 +64,20 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
     }
   };
 
-  const copyToClipboard = (text: string, type: 'shortcode' | 'code') => {
+  const copyToClipboard = (text: string, type: 'shortcode' | 'code' | 'url' | 'git') => {
     navigator.clipboard.writeText(text);
     if (type === 'shortcode') {
       setCopiedShortcode(true);
       setTimeout(() => setCopiedShortcode(false), 2000);
-    } else {
+    } else if (type === 'code') {
       setCopiedCode(true);
       setTimeout(() => setCopiedCode(false), 2000);
+    } else if (type === 'url') {
+      setCopiedUrl(true);
+      setTimeout(() => setCopiedUrl(false), 2000);
+    } else if (type === 'git') {
+      setCopiedGit(true);
+      setTimeout(() => setCopiedGit(false), 2000);
     }
   };
 
@@ -113,10 +129,10 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-slate-800 bg-slate-950/40 px-6 gap-2 pt-2">
+        <div className="flex border-b border-slate-800 bg-slate-950/40 px-6 gap-2 pt-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab('download')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 transition ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 whitespace-nowrap transition ${
               activeTab === 'download'
                 ? 'border-amber-500 text-amber-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -127,8 +143,20 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
           </button>
 
           <button
+            onClick={() => setActiveTab('github')}
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 whitespace-nowrap transition ${
+              activeTab === 'github'
+                ? 'border-amber-500 text-amber-300'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Github className="w-4 h-4 text-purple-400" />
+            <span>GitHub & Release</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('instructions')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 transition ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 whitespace-nowrap transition ${
               activeTab === 'instructions'
                 ? 'border-amber-500 text-amber-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -140,7 +168,7 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
 
           <button
             onClick={() => setActiveTab('files')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 transition ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 whitespace-nowrap transition ${
               activeTab === 'files'
                 ? 'border-amber-500 text-amber-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -152,7 +180,7 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
 
           <button
             onClick={() => setActiveTab('preview')}
-            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 transition ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 whitespace-nowrap transition ${
               activeTab === 'preview'
                 ? 'border-amber-500 text-amber-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -168,6 +196,20 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
           {/* TAB 1: DOWNLOAD & QUICK CONFIG */}
           {activeTab === 'download' && (
             <div className="space-y-6">
+              {/* Info notice about GitHub vs direct download */}
+              <div className="p-3.5 rounded-xl bg-purple-950/40 border border-purple-500/40 flex items-start gap-3 text-xs">
+                <Github className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-purple-200 block mb-0.5">
+                    Miksi paketti ei löydy julkisesta GitHubista?
+                  </strong>
+                  <span className="text-slate-300">
+                    Tämä peli on rakennettu suoraan Google AI Studio -pilviympäristössä, eikä sitä ole oletuksena yhdistetty henkilökohtaiseen GitHub-tiliisi.{' '}
+                    <strong>Voit ladata valmiin `.zip`-asennuspaketin suoraan alta ilman GitHubia</strong>, tai viedä sen omaan GitHubiisi "GitHub & Release" -välilehden ohjeilla.
+                  </span>
+                </div>
+              </div>
+
               {/* Main Download Callout */}
               <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 border-2 border-amber-500/50 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="space-y-2 max-w-xl">
@@ -184,32 +226,37 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
                     sekä täysin itsenäisen 3D WebGL -pelimoottorin, joka toimii kaikilla palvelimilla ilman ulkoisia riippuvuuksia!
                   </p>
 
-                  <div className="flex items-center gap-4 pt-1 text-xs text-slate-400">
+                  <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-400">
                     <span className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                       Yhteensopiva: Gutenberg, Elementor, Divi
                     </span>
                     <span className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      GPLv2-lisenssi
+                      Koko: ~8 KB (.zip)
                     </span>
                   </div>
                 </div>
 
                 <div className="shrink-0 flex flex-col items-center gap-2 w-full md:w-auto">
+                  {/* Direct Static File Download Button */}
+                  <a
+                    href="/realm-of-eldoria-rpg.zip"
+                    download="realm-of-eldoria-rpg.zip"
+                    className="w-full md:w-auto flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm uppercase font-cinzel transition shadow-xl hover:scale-102 text-center"
+                    onClick={() => soundEngine.playLevelUp()}
+                  >
+                    <Download className="w-5 h-5" />
+                    <span>Lataa valmis .ZIP suoraan</span>
+                  </a>
+
+                  {/* Dynamic Generator Button (Custom settings) */}
                   <button
                     disabled={isGenerating}
                     onClick={handleDownloadZip}
-                    className="w-full md:w-auto flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm uppercase font-cinzel transition shadow-xl hover:scale-102 cursor-pointer"
+                    className="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition"
                   >
-                    {isGenerating ? (
-                      <span>Luodaan ZIP-pakettia...</span>
-                    ) : (
-                      <>
-                        <Download className="w-5 h-5" />
-                        <span>Lataa WordPress-lisäosa (.zip)</span>
-                      </>
-                    )}
+                    {isGenerating ? 'Luodaan ZIP-pakettia...' : 'Generoi uusi räätälöity ZIP'}
                   </button>
 
                   {downloadSuccess && (
@@ -221,24 +268,48 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
                 </div>
               </div>
 
-              {/* Shortcode quick copy */}
-              <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block font-cinzel">
-                    Käytä WordPress-sivuilla lyhytkoodilla:
-                  </span>
-                  <code className="text-base font-bold text-amber-300">
-                    [{config.shortcode}]
-                  </code>
+              {/* Direct Link & Shortcode */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Direct Download URL */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block font-cinzel">
+                      Suora lataus-URL (Direct Download Link):
+                    </span>
+                    <input
+                      type="text"
+                      readOnly
+                      value={directZipUrl}
+                      className="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-amber-300 font-mono mt-1 select-all"
+                    />
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(directZipUrl, 'url')}
+                    className="self-end flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition"
+                  >
+                    {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedUrl ? 'Kopioitu!' : 'Kopioi suora linkki'}</span>
+                  </button>
                 </div>
 
-                <button
-                  onClick={() => copyToClipboard(`[${config.shortcode}]`, 'shortcode')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition"
-                >
-                  {copiedShortcode ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  <span>{copiedShortcode ? 'Kopioitu!' : 'Kopioi lyhytkoodi'}</span>
-                </button>
+                {/* Shortcode */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block font-cinzel">
+                      Lyhytkoodi WordPress-sivuille:
+                    </span>
+                    <code className="text-base font-bold text-amber-300 block mt-1">
+                      [{config.shortcode}]
+                    </code>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(`[${config.shortcode}]`, 'shortcode')}
+                    className="self-end flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition"
+                  >
+                    {copiedShortcode ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedShortcode ? 'Kopioitu!' : 'Kopioi lyhytkoodi'}</span>
+                  </button>
+                </div>
               </div>
 
               {/* Plugin Settings Configuration */}
@@ -296,15 +367,126 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
             </div>
           )}
 
-          {/* TAB 2: STEP-BY-STEP INSTRUCTIONS */}
+          {/* TAB 2: GITHUB & RELEASES GUIDE */}
+          {activeTab === 'github' && (
+            <div className="space-y-6">
+              <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-500/40 text-xs text-purple-200 flex items-start gap-3">
+                <Github className="w-6 h-6 text-purple-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-purple-100 font-cinzel">
+                    Miksi asennuspaketti ei ole valmiiksi GitHubissa?
+                  </h4>
+                  <p className="text-slate-300 leading-relaxed">
+                    Tämä peli ja WordPress-lisäosa on luotu <strong>Google AI Studio Build</strong> -alustalla. 
+                    AI Studio ei tallenna sovelluksia automaattisesti käyttäjien henkilökohtaisiin GitHub-tileihin tai julkisiin GitHub-repoihin tietosuojasyistä.
+                  </p>
+                  <p className="text-amber-300 font-semibold pt-1">
+                    👉 Sinun ei tarvitse käyttää GitHubia lisäosan asentamiseen! Voit ladata valmiin ZIP-paketin suoraan tämän sovelluksen "Lataa ZIP-paketti" -välilehdeltä.
+                  </p>
+                </div>
+              </div>
+
+              {/* How to publish to GitHub Releases */}
+              <div className="p-5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-4">
+                <h4 className="text-sm font-bold text-amber-200 font-cinzel flex items-center gap-2">
+                  <span>🚀</span>
+                  <span>Näin julkaiset lisäosan omalle GitHub-tilillesi (GitHub Releases):</span>
+                </h4>
+
+                <div className="space-y-3 text-xs text-slate-300">
+                  <div className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center shrink-0">1</span>
+                    <div>
+                      <strong className="text-slate-100">Lataa ZIP-paketti:</strong>
+                      <p className="text-slate-400 mt-0.5">
+                        Lataa koneellesi <code className="text-amber-300">realm-of-eldoria-rpg.zip</code> "Lataa ZIP" -painikkeella.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center shrink-0">2</span>
+                    <div>
+                      <strong className="text-slate-100">Luo uusi repositorio GitHubissa:</strong>
+                      <p className="text-slate-400 mt-0.5">
+                        Kirjaudu osoitteeseen <a href="https://github.com/new" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline inline-flex items-center gap-1">github.com/new <ExternalLink className="w-3 h-3" /></a> ja luo uusi julkinen repositorio esim. nimellä <code>realm-of-eldoria-wordpress-plugin</code>.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center shrink-0">3</span>
+                    <div>
+                      <strong className="text-slate-100">Luo uusi Release GitHubissa:</strong>
+                      <p className="text-slate-400 mt-0.5">
+                        Mene repositoriosi sivulla oikeaan laitaan kohtaan <strong>Releases → Draft a new release</strong> (tai <em>Create a new release</em>).
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center shrink-0">4</span>
+                    <div>
+                      <strong className="text-slate-100">Liitä .zip tiedosto ja julkaise:</strong>
+                      <p className="text-slate-400 mt-0.5">
+                        Kirjoita tagiksi esim. <code>v1.0.0</code> ja raahaa lataamasi <code className="text-amber-300">realm-of-eldoria-rpg.zip</code> kohtaan <em>"Attach binaries by dropping them here or selecting them"</em>. Klikkaa <strong>Publish release</strong>.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0">✓</span>
+                    <div>
+                      <strong className="text-emerald-300">Valmis! Virallinen GitHub-latauslinkki:</strong>
+                      <p className="text-slate-400 mt-0.5">
+                        Nyt sinulla on pysyvä julkinen GitHub-latauslinkki muille jaettavaksi:
+                        <br />
+                        <code className="text-[11px] text-amber-300 bg-slate-900 px-2 py-1 rounded inline-block mt-1">
+                          https://github.com/&lt;kayttaja&gt;/&lt;repo&gt;/releases/download/v1.0.0/realm-of-eldoria-rpg.zip
+                        </code>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Git CLI commands */}
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-slate-300">
+                    <Terminal className="w-4 h-4 text-emerald-400" />
+                    <span>Lähdekoodin vienti GitHubiin Git-komentona (Valinnainen):</span>
+                  </div>
+                  <button
+                    onClick={() => copyToClipboard(`git init\ngit add .\ngit commit -m "Initial commit: Realm of Eldoria 3D RPG WordPress Plugin"\ngit branch -M main\ngit remote add origin https://github.com/<sinun-kayttaja>/<repo>.git\ngit push -u origin main`, 'git')}
+                    className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 transition"
+                  >
+                    {copiedGit ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedGit ? 'Kopioitu!' : 'Kopioi komennot'}</span>
+                  </button>
+                </div>
+
+                <pre className="text-[11px] font-mono text-emerald-300/90 bg-black/60 p-3 rounded-lg overflow-x-auto leading-relaxed">
+{`git init
+git add .
+git commit -m "Initial commit: Realm of Eldoria 3D RPG WordPress Plugin"
+git branch -M main
+git remote add origin https://github.com/<sinun-kayttajanimi>/<repositorion-nimi>.git
+git push -u origin main`}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: STEP-BY-STEP INSTRUCTIONS */}
           {activeTab === 'instructions' && (
             <div className="space-y-6">
               <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-500/30 text-xs text-blue-200 flex items-start gap-3">
                 <span className="text-xl">💡</span>
                 <div>
-                  <strong>Asennus tapahtuu WordPressin omasta hallinnasta ilman koodaustaitoja!</strong>
+                  <strong>Asennus tapahtuu suoraan WordPressin hallinnasta ilman koodaustaitoja!</strong>
                   <p className="mt-1 text-slate-300">
-                    Et tarvitse FTP-yhteyttä tai palvelimen komentoriviä. Lisäosa ladataan suoraan WordPressin vakioasennustyökalulla.
+                    Et tarvitse FTP-yhteyttä, GitHub-tiliä tai komentoriviä. Lisäosa ladataan suoraan WordPressin omalla asennustyökalulla.
                   </p>
                 </div>
               </div>
@@ -318,7 +500,7 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
                   <div>
                     <h4 className="font-bold text-sm text-slate-100 font-cinzel">Lataa ZIP-paketti</h4>
                     <p className="text-xs text-slate-400 mt-1">
-                      Klikkaa edelliseltä välilehdeltä <strong>"Lataa WordPress-lisäosa (.zip)"</strong> tallentaaksesi{' '}
+                      Klikkaa tämän ikkunan ensimmäiseltä välilehdeltä <strong>"Lataa valmis .ZIP suoraan"</strong> tallentaaksesi{' '}
                       <code className="text-amber-300">{config.pluginSlug}.zip</code> omalle tietokoneellesi.
                     </p>
                   </div>
@@ -388,7 +570,7 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
             </div>
           )}
 
-          {/* TAB 3: FILE EXPLORER & CODE VIEW */}
+          {/* TAB 4: FILE EXPLORER & CODE VIEW */}
           {activeTab === 'files' && (
             <div className="flex flex-col md:flex-row gap-4 h-[420px]">
               {/* File tree */}
@@ -444,7 +626,7 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
             </div>
           )}
 
-          {/* TAB 4: WORDPRESS ADMIN SIMULATOR */}
+          {/* TAB 5: WORDPRESS ADMIN SIMULATOR */}
           {activeTab === 'preview' && (
             <div className="rounded-xl border border-slate-700 overflow-hidden bg-slate-100 text-slate-800 text-xs shadow-xl">
               {/* Fake WP-Admin top bar */}
@@ -515,17 +697,21 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-400">
+        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
           <span>
             Sisältää täydellisen Three.js WebGL -3D-pelimoottorin, taistelut, torjunnat, loitsut ja kaivokset.
           </span>
-          <button
-            onClick={handleDownloadZip}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold uppercase font-cinzel transition shadow cursor-pointer"
-          >
-            <Download className="w-4 h-4" />
-            <span>Lataa .ZIP nyt</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href="/realm-of-eldoria-rpg.zip"
+              download="realm-of-eldoria-rpg.zip"
+              onClick={() => soundEngine.playLevelUp()}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold uppercase font-cinzel transition shadow cursor-pointer"
+            >
+              <Download className="w-4 h-4" />
+              <span>Lataa .ZIP nyt</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
