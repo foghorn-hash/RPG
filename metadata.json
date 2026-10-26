@@ -1,0 +1,6 @@
+{
+  "name": "Realm of Eldoria - 3D Open World Action RPG",
+  "description": "An open world 3D fantasy action RPG featuring distinct classes (Wizard, Elf, Warrior, Dwarf, Hobbit), real-time combat with parry mechanics, spellcasting, stealth, mining, crafting, dynamic progression, and quests.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
