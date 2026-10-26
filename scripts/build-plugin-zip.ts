@@ -6,6 +6,7 @@ import {
   generateMainPhp,
   generateReadme,
   generateUninstallPhp,
+  generateMitLicense,
   generateStandaloneGameHtml,
 } from '../src/services/wordpressPluginGenerator.ts';
 
@@ -26,6 +27,7 @@ async function main() {
   folder.file(`${DEFAULT_WP_CONFIG.pluginSlug}.php`, generateMainPhp(DEFAULT_WP_CONFIG));
   folder.file('readme.txt', generateReadme(DEFAULT_WP_CONFIG));
   folder.file('uninstall.php', generateUninstallPhp());
+  folder.file('LICENSE', generateMitLicense());
 
   const gameFolder = folder.folder('game') || folder;
   gameFolder.file('index.html', generateStandaloneGameHtml(DEFAULT_WP_CONFIG));

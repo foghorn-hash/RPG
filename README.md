@@ -4,7 +4,7 @@
 [![React](https://img.shields.io/badge/React-19-blue?style=flat&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![WordPress](https://img.shields.io/badge/WordPress-5.8--6.7%2B-21759B?style=flat&logo=wordpress)](https://wordpress.org/)
-[![License: GPL v2+](https://img.shields.io/badge/License-GPLv2%2B-orange.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Realm of Eldoria** on selainpohjainen 3D-avoinroolipeli (Action RPG), joka sisältää reaaliaikaisen taistelun ja torjuntamekaniikan (parry), loitsut, kaivostoiminnan, esineiden takomisen ja dynaamisen hahmonkehityksen. 
 
@@ -177,11 +177,24 @@ git push -u origin main
 │   ├── index.css                    # Tailwind CSS -tyylit
 │   └── main.tsx                     # Sovelluksen sisääntulopiste
 ├── package.json
+├── LICENSE                          # Virallinen MIT-lisenssi
+├── LICENSE-FAQ.md                   # Kattava FAQ (Apple App Store, Google Play, kaupallistaminen)
 └── README.md
 ```
 
 ---
 
-## 📜 Lisenssi
+## 📜 Lisenssi & Kaupallinen käyttö
 
-Tämä projekti on lisensoitu **GPL v2 or later** -lisenssillä, joten se on 100% yhteensopiva virallisten WordPress-lisäosien ja GNU-standardien kanssa.
+Tämä projekti on lisensoitu sallivalla **[MIT-lisenssillä](LICENSE)**.
+
+### Apple App Store & Google Play -julkaiseminen:
+MIT-lisenssi sallii pelin vapaan kaupallisen julkaisemisen mobiilisovelluskaupoissa:
+* **Apple App Store (iOS)**: Täysin sallittu ja yhteensopiva Applen EULA-ehtojen ja DRM-suojauksen kanssa.
+* **Google Play (Android)**: Täysin sallittu (voit käyttää Capacitor- tai PWA/TWA-paketointia).
+* **Kaupallinen myynti & In-App Purchases**: Voit veloittaa pelistä maksun tai myydä pelinsisäisiä ostoksia ilman rojaltimaksuja.
+* **WordPress-yhteensopivuus**: MIT on 100% yhteensopiva WordPressin GPLv2+-lisenssin kanssa.
+
+Katso yksityiskohtaiset vastaukset, paketointiohjeet ja säännöt tiedostosta:  
+👉 **[LICENSE-FAQ.md](LICENSE-FAQ.md)**
+

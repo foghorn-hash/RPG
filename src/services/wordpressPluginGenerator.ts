@@ -38,7 +38,8 @@ export function generateMainPhp(config: WordPressPluginConfig): string {
  * Version: ${config.version}
  * Author: ${config.author}
  * Author URI: https://eldoria.rpg
- * License: GPL v2 or later
+ * License: MIT
+ * License URI: https://opensource.org/licenses/MIT
  * Text Domain: ${config.pluginSlug}
  */
 
@@ -199,8 +200,8 @@ Tags: 3d game, rpg, threejs, roleplaying, open world, gaming, parry, spells, dwa
 Requires at least: 5.8
 Tested up to: 6.7
 Stable tag: ${config.version}
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+License: MIT
+License URI: https://opensource.org/licenses/MIT
 
 Täysiverinen 3D-roolipeli WordPress-sivustoille. Sisältää avoimen maailman, 5 hahmoluokkaa, torjuntamekaniikan, loitsut, kaivostoiminnan ja tehtävät.
 
@@ -259,6 +260,34 @@ delete_option('eldoria_width');
 delete_option('eldoria_height');
 delete_option('eldoria_fullscreen');
 delete_option('eldoria_default_class');
+`;
+}
+
+/**
+ * Generates official MIT License text
+ */
+export function generateMitLicense(): string {
+  return `MIT License
+
+Copyright (c) 2026 Matti Kiviharju & Realm of Eldoria Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 `;
 }
 
@@ -473,6 +502,9 @@ export async function createWordPressPluginZip(config: WordPressPluginConfig): P
 
   // 3. uninstall.php
   folder.file('uninstall.php', generateUninstallPhp());
+
+  // 4. LICENSE (MIT)
+  folder.file('LICENSE', generateMitLicense());
 
   // 4. Standalone game bundle in game/ folder
   const gameFolder = folder.folder('game') || folder;

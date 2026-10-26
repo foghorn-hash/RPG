@@ -7,6 +7,7 @@ import {
   generateMainPhp,
   generateReadme,
   generateUninstallPhp,
+  generateMitLicense,
   generateStandaloneGameHtml,
 } from '../services/wordpressPluginGenerator';
 import {
@@ -26,6 +27,11 @@ import {
   Link2,
   Terminal,
   AlertTriangle,
+  ShieldCheck,
+  Smartphone,
+  Store,
+  DollarSign,
+  Scale,
 } from 'lucide-react';
 import { soundEngine } from '../audio/soundEngine';
 
@@ -35,7 +41,7 @@ interface WordPressPluginModalProps {
 
 export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onClose }) => {
   const [config, setConfig] = useState<WordPressPluginConfig>(DEFAULT_WP_CONFIG);
-  const [activeTab, setActiveTab] = useState<'download' | 'github' | 'instructions' | 'files' | 'preview'>('download');
+  const [activeTab, setActiveTab] = useState<'download' | 'github' | 'license' | 'instructions' | 'files' | 'preview'>('download');
   const [selectedFile, setSelectedFile] = useState<string>('plugin.php');
   const [copiedShortcode, setCopiedShortcode] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -89,6 +95,8 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
         return generateReadme(config);
       case 'uninstall.php':
         return generateUninstallPhp();
+      case 'LICENSE':
+        return generateMitLicense();
       case 'game/index.html':
         return generateStandaloneGameHtml(config);
       default:
@@ -108,14 +116,17 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold font-cinzel text-amber-200">
-                  WordPress-plugin & ZIP-asennuspaketti
+                  WordPress-plugin, ZIP & MIT-lisenssi
                 </h2>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-900/60 text-blue-300 border border-blue-600/40 uppercase">
                   WordPress 5.8 - 6.7+
                 </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-600/40 uppercase">
+                  MIT License
+                </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">
-                Valmis ladattava .zip-lisäosa, joka asennetaan suoraan WordPressin hallintapaneelista.
+                Valmis ladattava .zip-lisäosa ja kaupallinen MIT-lisenssi (App Store & Google Play).
               </p>
             </div>
           </div>
@@ -140,6 +151,18 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
           >
             <Download className="w-4 h-4" />
             <span>Lataa ZIP-paketti</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('license')}
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold font-cinzel border-b-2 whitespace-nowrap transition ${
+              activeTab === 'license'
+                ? 'border-amber-500 text-amber-300'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>MIT-lisenssi & Kauppa FAQ</span>
           </button>
 
           <button
@@ -221,7 +244,7 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
                     Lataa {config.pluginSlug}.zip
                   </h3>
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Paketti sisältää täydellisen WordPress-lisäosan: PHP-pääohjaimen, asennustiedostot, lyhytkoodin{' '}
+                    Paketti sisältää täydellisen WordPress-lisäosan: PHP-pääohjaimen, asennustiedostot, virallisen MIT-lisenssin, lyhytkoodin{' '}
                     <code className="text-amber-300 font-bold bg-slate-950 px-1 py-0.5 rounded">[{config.shortcode}]</code>{' '}
                     sekä täysin itsenäisen 3D WebGL -pelimoottorin, joka toimii kaikilla palvelimilla ilman ulkoisia riippuvuuksia!
                   </p>
@@ -232,8 +255,8 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
                       Yhteensopiva: Gutenberg, Elementor, Divi
                     </span>
                     <span className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      Koko: ~8 KB (.zip)
+                      <Scale className="w-3.5 h-3.5 text-emerald-400" />
+                      Lisenssi: MIT (100% vapaa kaupallinen käyttö)
                     </span>
                   </div>
                 </div>
@@ -367,7 +390,116 @@ export const WordPressPluginModal: React.FC<WordPressPluginModalProps> = ({ onCl
             </div>
           )}
 
-          {/* TAB 2: GITHUB & RELEASES GUIDE */}
+          {/* TAB 2: MIT LICENSE & STORE FAQ */}
+          {activeTab === 'license' && (
+            <div className="space-y-6">
+              {/* License Card */}
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/40 via-slate-900 to-slate-950 border-2 border-emerald-500/50 shadow-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                    <h3 className="text-lg font-bold font-cinzel text-emerald-200">
+                      MIT-lisenssi — 100% Vapaa kaupallinen käyttö
+                    </h3>
+                  </div>
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40">
+                    Open Source & Commercial
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Peli ja sen lähdekoodi on lisensoitu virallisella <strong>MIT-lisenssillä</strong> (Copyright © 2026 Matti Kiviharju). 
+                  MIT-lisenssi antaa täyden vapauden hyödyntää peliä kaupallisesti, muokata sitä, sulkea koodi (proprietary) ja julkaista se mobiilikaupoissa ilman rojaltimaksuja.
+                </p>
+              </div>
+
+              {/* Store Publishing Q&A */}
+              <div className="space-y-4">
+                <h4 className="text-sm font-bold font-cinzel text-amber-300 flex items-center gap-2">
+                  <Store className="w-4 h-4 text-amber-400" />
+                  <span>Usein kysytyt kysymykset: Apple App Store & Google Play</span>
+                </h4>
+
+                {/* Q1: Apple App Store */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                    <Smartphone className="w-4 h-4 text-sky-400" />
+                    <span>Saako MIT-lisensoidun pelin julkaista Apple App Storessa (iOS / macOS)?</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    <strong className="text-emerald-400">Kyllä, ehdottomasti.</strong> Toisin kuin tiukka GPL (joka kieltää DRM-suojaukset ja aiheuttaa ristiriitoja Applen EULA-ehtojen kanssa), 
+                    <strong> MIT-lisenssissä ei ole DRM- tai jakelurajoituksia</strong>. Apple hyväksyy MIT-koodin suoraan App Storeen.
+                  </p>
+                  <div className="text-[11px] text-slate-400 bg-slate-900/80 p-2.5 rounded-lg border border-slate-800">
+                    <strong>Ainoa vaatimus:</strong> Sisällytä lyhyt tekijänoikeus- ja lisenssimaininta sovellukseesi (esim. pelin <em>Asetukset → Tietoja / Lisenssit</em> -kohdassa tai App Store -kuvauksessa):<br />
+                    <code className="text-amber-300">Copyright (c) 2026 Matti Kiviharju & Realm of Eldoria. Licensed under MIT.</code>
+                  </div>
+                </div>
+
+                {/* Q2: Google Play Store */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                    <Smartphone className="w-4 h-4 text-emerald-400" />
+                    <span>Saako pelin julkaista Google Play Storessa (Android)?</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    <strong className="text-emerald-400">Kyllä.</strong> Google Play hyväksyy MIT-lisensoidut pelit ilman rajoituksia sekä ilmaisina että maksullisina sovelluksina.
+                  </p>
+                </div>
+
+                {/* Q3: Monetization & IAP */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                    <DollarSign className="w-4 h-4 text-yellow-400" />
+                    <span>Voinko ottaa maksun pelistä, myydä In-App Purchases -ostoksia tai näyttää mainoksia?</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    <strong className="text-emerald-400">Kyllä, 100% vapaasti.</strong> MIT-lisenssi sallii kaupallisen myynnin (<em>"to sell copies of the Software"</em>). 
+                    Kaikki sovelluskaupan tuotot (lataushinta, timantit/kolikot pelinsisäisillä ostoilla tai AdMob-mainostulot) jäävät kokonaisuudessaan sinulle.
+                  </p>
+                </div>
+
+                {/* Q4: Closed source / Proprietary */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                    <Scale className="w-4 h-4 text-purple-400" />
+                    <span>Täytyykö minun jakaa pelini lähdekoodi julkiseksi, jos julkaisen sen App Storessa?</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    <strong className="text-slate-100">Ei tarvitse.</strong> MIT-lisenssi sallii koodin pitämisen suljettuna (proprietary). Voit vapaasti muokata grafiikkaa, mekaniikkaa ja hahmoja julkaisematta muokattua koodia kenellekään.
+                  </p>
+                </div>
+
+                {/* Q5: Packaging for mobile */}
+                <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
+                  <div className="flex items-center gap-2 text-sm font-bold text-slate-100">
+                    <Laptop className="w-4 h-4 text-amber-400" />
+                    <span>Miten peli paketoidaan iOS (.ipa) tai Android (.aab / .apk) -muotoon?</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Peli pyörii modernilla HTML5 WebGL / Three.js -tekniikalla, joten sen paketointi natiiviksi mobiilisovellukseksi on suoraviivaista:
+                  </p>
+                  <ul className="text-xs text-slate-300 space-y-1 list-disc list-inside">
+                    <li><strong>Capacitor (Suositeltu)</strong>: Luo hetkessä natiivit Xcode (iOS) ja Android Studio -projektit (<code>npx cap add ios</code> / <code>android</code>).</li>
+                    <li><strong>Google Bubblewrap (TWA)</strong>: Paketoi pelin suoraan Google Playhin Progressive Web App -muodossa.</li>
+                    <li><strong>WKWebView (iOS)</strong>: Voit käyttää Applen natiivia WebView-näkymää Swift-projektissa.</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Raw MIT License text preview */}
+              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <span className="text-xs font-bold text-slate-400 block font-cinzel">
+                  Virallinen lisenssiteksti (LICENSE):
+                </span>
+                <pre className="text-[11px] font-mono text-slate-300 bg-black/60 p-3 rounded-lg overflow-x-auto leading-relaxed">
+{generateMitLicense()}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: GITHUB & RELEASES GUIDE */}
           {activeTab === 'github' && (
             <div className="space-y-6">
               <div className="p-4 rounded-xl bg-purple-950/30 border border-purple-500/40 text-xs text-purple-200 flex items-start gap-3">
@@ -478,7 +610,7 @@ git push -u origin main`}
             </div>
           )}
 
-          {/* TAB 3: STEP-BY-STEP INSTRUCTIONS */}
+          {/* TAB 4: STEP-BY-STEP INSTRUCTIONS */}
           {activeTab === 'instructions' && (
             <div className="space-y-6">
               <div className="p-4 rounded-xl bg-blue-950/30 border border-blue-500/30 text-xs text-blue-200 flex items-start gap-3">
@@ -570,7 +702,7 @@ git push -u origin main`}
             </div>
           )}
 
-          {/* TAB 4: FILE EXPLORER & CODE VIEW */}
+          {/* TAB 5: FILE EXPLORER & CODE VIEW */}
           {activeTab === 'files' && (
             <div className="flex flex-col md:flex-row gap-4 h-[420px]">
               {/* File tree */}
@@ -583,6 +715,7 @@ git push -u origin main`}
                   { id: 'plugin.php', name: `${config.pluginSlug}.php`, icon: '🐘' },
                   { id: 'readme.txt', name: 'readme.txt', icon: '📄' },
                   { id: 'uninstall.php', name: 'uninstall.php', icon: '🗑️' },
+                  { id: 'LICENSE', name: 'LICENSE (MIT)', icon: '⚖️' },
                   { id: 'game/index.html', name: 'game/index.html', icon: '🎮' },
                 ].map((f) => (
                   <button
@@ -626,7 +759,7 @@ git push -u origin main`}
             </div>
           )}
 
-          {/* TAB 5: WORDPRESS ADMIN SIMULATOR */}
+          {/* TAB 6: WORDPRESS ADMIN SIMULATOR */}
           {activeTab === 'preview' && (
             <div className="rounded-xl border border-slate-700 overflow-hidden bg-slate-100 text-slate-800 text-xs shadow-xl">
               {/* Fake WP-Admin top bar */}
